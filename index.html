@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مهامي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   TOKENS — dark (default)
+══════════════════════════════════════ */
+:root {
+  --bg:          #0d1117;
+  --surface:     #111827;
+  --surface2:    #0f1923;
+  --surface3:    #0b1520;
+  --border:      #1e2d3d;
+  --border2:     #243447;
+  --accent:      #378add;
+  --accent-glow: rgba(55,138,221,.16);
+  --accent-soft: rgba(55,138,221,.08);
+  --text:        #d4e4f0;
+  --text-muted:  #4d6a85;
+  --text-dim:    #2d4560;
+  --done-text:   #2a4158;
+  --drag-bg:     rgba(55,138,221,.06);
+  --radius:      12px;
+  --shadow:      none;
+}
+
+/* ── LIGHT MODE ── */
+html.light {
+  --bg:          #f0f4f8;
+  --surface:     #ffffff;
+  --surface2:    #f7fafc;
+  --surface3:    #eef2f7;
+  --border:      #d0dcea;
+  --border2:     #b8ccdf;
+  --accent:      #1a6fbf;
+  --accent-glow: rgba(26,111,191,.14);
+  --accent-soft: rgba(26,111,191,.08);
+  --text:        #1a2d3e;
+  --text-muted:  #6a8aaa;
+  --text-dim:    #9ab2c8;
+  --done-text:   #9ab2c8;
+  --drag-bg:     rgba(26,111,191,.05);
+  --shadow:      0 1px 4px rgba(0,0,0,.07);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family:'Cairo',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:48px 20px 100px;
+  transition:background .3s, color .3s;
+}
+
+.container { width:100%; max-width:540px; }
+
+/* ══════════════════════════════════════
+   HEADER
+══════════════════════════════════════ */
+.header { margin-bottom:28px; animation:fadeUp .4s ease both; }
+
+.top-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.logo-row { display:flex; align-items:center; gap:10px; }
+
+.logo-icon {
+  width:34px; height:34px;
+  background:var(--accent-soft); border:1px solid var(--border2);
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .3s, border-color .3s;
+}
+
+.logo-text { font-size:1rem; font-weight:700; letter-spacing:-.3px; }
+
+/* Theme toggle */
+.theme-btn {
+  width:36px; height:36px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:9px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .2s, border-color .2s, transform .15s;
+  color:var(--text-muted);
+  flex-shrink:0;
+}
+.theme-btn:hover { border-color:var(--border2); color:var(--accent); transform:rotate(20deg); }
+.theme-btn svg { width:16px; height:16px; }
+.icon-sun { display:none; }
+.icon-moon { display:block; }
+html.light .icon-sun  { display:block; }
+html.light .icon-moon { display:none; }
+
+/* Stats */
+.stats-row { display:flex; gap:8px; }
+.stat-card {
+  flex:1; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:12px 14px;
+  box-shadow:var(--shadow);
+  transition:background .3s, border-color .3s, box-shadow .3s;
+}
+.stat-label { font-size:.66rem; font-weight:600; color:var(--text-muted); letter-spacing:.5px; margin-bottom:3px; }
+.stat-value { font-size:1.5rem; font-weight:900; color:var(--text); line-height:1; transition:color .3s; }
+.stat-value.blue { color:var(--accent); }
+
+/* Progress */
+.progress-section { margin-top:12px; display:none; }
+.progress-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.progress-meta .lbl { font-size:.68rem; color:var(--text-muted); }
+.progress-meta .pct { font-size:.78rem; font-weight:700; color:var(--accent); }
+.progress-track { height:5px; background:var(--border); border-radius:99px; overflow:hidden; }
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,#0e4d8a,var(--accent));
+  border-radius:99px; width:0%;
+  transition:width .55s cubic-bezier(.34,1.2,.64,1);
+}
+html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
+
+/* ══════════════════════════════════════
+   ADD FORM
+══════════════════════════════════════ */
+.add-form {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px;
+  margin-bottom:20px;
+  animation:fadeUp .4s .07s ease both;
+  display:flex; flex-direction:column; gap:8px;
+  box-shadow:var(--shadow);
+  transition:background .3s, border-color .3s;
+}
+
+.add-form input[type="text"],
+.add-form textarea {
+  background:var(--surface3); border:1px solid var(--border);
+  border-radius:9px; padding:10px 13px;
+  font-family:'Cairo',sans-serif; font-size:.87rem; color:var(--text);
+  outline:none; caret-color:var(--accent); width:100%;
+  transition:border-color .2s, box-shadow .2s, background .3s, color .3s;
+}
+.add-form input[type="text"]::placeholder,
+.add-form textarea::placeholder { color:var(--text-dim); }
+.add-form input[type="text"]:focus,
+.add-form textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+.add-form textarea { resize:none; height:68px; line-height:1.55; }
+
+.form-footer { display:flex; justify-content:flex-end; }
+
+.btn-add {
+  display:flex; align-items:center; gap:6px;
+  background:var(--accent); color:#fff;
+  border:none; border-radius:9px;
+  padding:0 18px; height:40px;
+  font-family:'Cairo',sans-serif; font-size:.88rem; font-weight:600;
+  cursor:pointer;
+  transition:opacity .15s, transform .15s, box-shadow .2s;
+  box-shadow:0 3px 12px var(--accent-glow);
+}
+.btn-add:hover { opacity:.88; box-shadow:0 4px 18px var(--accent-glow); }
+.btn-add:active { transform:scale(.95); }
+
+/* ══════════════════════════════════════
+   SECTION LABEL
+══════════════════════════════════════ */
+.sec-label {
+  font-size:.65rem; font-weight:700; color:var(--text-muted);
+  letter-spacing:1.8px; text-transform:uppercase; margin:22px 0 9px 2px;
+}
+
+/* ══════════════════════════════════════
+   TASK CARD
+══════════════════════════════════════ */
+.tasks { display:flex; flex-direction:column; gap:7px; }
+
+.task {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  transition:border-color .2s, background .3s, box-shadow .2s, opacity .2s, transform .2s;
+  box-shadow:var(--shadow);
+  animation:fadeUp .26s ease both;
+  position:relative;
+}
+.task:hover { border-color:var(--border2); }
+.task.done { background:var(--surface2); }
+.task.done .task-title {
+  color:var(--done-text);
+  text-decoration:line-through; text-decoration-thickness:1.5px;
+  text-decoration-color:var(--text-dim);
+}
+.task.dragging { opacity:.45; transform:scale(.99); }
+.task.drag-over { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
+
+/* Task top row */
+.task-top {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 12px 12px 14px;
+  cursor:pointer; user-select:none;
+  transition:background .15s;
+}
+.task-top:hover { background:rgba(128,128,128,.03); }
+
+/* Drag handle */
+.drag-handle {
+  display:flex; flex-direction:column; gap:2.5px;
+  padding:4px 2px; cursor:grab; flex-shrink:0; opacity:.35;
+  transition:opacity .15s;
+}
+.task:hover .drag-handle { opacity:.7; }
+.drag-handle:active { cursor:grabbing; }
+.drag-handle span {
+  display:block; width:14px; height:1.5px;
+  background:var(--text-muted); border-radius:2px;
+}
+
+/* Reorder arrows */
+.order-btns {
+  display:flex; flex-direction:column; gap:1px; flex-shrink:0;
+  opacity:0; transition:opacity .15s;
+}
+.task:hover .order-btns { opacity:1; }
+.btn-up, .btn-dn {
+  background:none; border:none; cursor:pointer;
+  color:var(--text-muted); padding:2px 3px; border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .15s, background .15s;
+  line-height:1;
+}
+.btn-up:hover, .btn-dn:hover { color:var(--accent); background:var(--accent-soft); }
+.btn-up:disabled, .btn-dn:disabled { opacity:.2; cursor:default; pointer-events:none; }
+
+/* Checkbox */
+.chk {
+  width:21px; height:21px; border-radius:7px;
+  border:1.5px solid var(--border2); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .22s ease; background:transparent;
+}
+.task.done .chk {
+  background:var(--accent); border-color:var(--accent);
+  box-shadow:0 2px 8px var(--accent-glow);
+}
+.chk-svg {
+  width:10px; height:10px; opacity:0;
+  transform:scale(.3) rotate(-8deg);
+  transition:all .22s cubic-bezier(.34,1.5,.64,1);
+}
+.task.done .chk-svg { opacity:1; transform:scale(1) rotate(0deg); }
+
+/* Dot indicator */
+.has-detail {
+  width:5px; height:5px; border-radius:50%;
+  background:var(--accent); flex-shrink:0; opacity:.65;
+}
+
+.task-title {
+  flex:1; font-size:.88rem; font-weight:500;
+  color:var(--text); line-height:1.45;
+  transition:color .25s; word-break:break-word;
+}
+
+/* Action buttons */
+.task-actions { display:flex; align-items:center; gap:1px; flex-shrink:0; }
+
+.btn-expand, .btn-del {
+  background:none; border:none; cursor:pointer;
+  padding:5px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .15s, background .15s, opacity .15s;
+}
+.btn-expand { color:var(--text-muted); opacity:.55; }
+.btn-expand:hover { color:var(--accent); background:var(--accent-soft); opacity:1; }
+.btn-expand.open { color:var(--accent); opacity:1; }
+.btn-expand svg { transition:transform .25s ease; }
+.btn-expand.open svg { transform:rotate(180deg); }
+
+.btn-del { color:var(--text-dim); opacity:0; }
+.task:hover .btn-del { opacity:1; }
+.btn-del:hover { color:#d94f4f; background:rgba(220,70,70,.1); }
+
+/* ══════════════════════════════════════
+   DETAIL PANEL
+══════════════════════════════════════ */
+.task-detail {
+  max-height:0; overflow:hidden; opacity:0;
+  border-top:0px solid var(--border);
+  transition:max-height .32s cubic-bezier(.4,0,.2,1), opacity .25s ease, border-top-width .1s;
+}
+.task-detail.open {
+  max-height:500px; opacity:1; border-top-width:1px;
+}
+
+.task-detail-inner {
+  padding:11px 12px 13px 14px;
+  display:flex; flex-direction:column; gap:10px;
+}
+
+.task-desc-area {
+  width:100%; background:var(--surface3); border:1px solid var(--border);
+  border-radius:9px; padding:10px 12px; min-height:68px;
+  font-family:'Cairo',sans-serif; font-size:.83rem; color:var(--text);
+  line-height:1.6; outline:none; resize:vertical;
+  caret-color:var(--accent);
+  transition:border-color .2s, box-shadow .2s, background .3s, color .3s;
+}
+.task-desc-area::placeholder { color:var(--text-dim); }
+.task-desc-area:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+.task.done .task-desc-area { color:var(--done-text); }
+
+/* Links */
+.links-section { display:flex; flex-direction:column; gap:6px; }
+.links-label { font-size:.65rem; font-weight:700; color:var(--text-muted); letter-spacing:1.2px; text-transform:uppercase; }
+
+.link-row { display:flex; align-items:center; gap:6px; }
+.link-row input {
+  flex:1; background:var(--surface3); border:1px solid var(--border);
+  border-radius:8px; padding:8px 11px;
+  font-family:'Cairo',sans-serif; font-size:.81rem; color:var(--text);
+  outline:none; caret-color:var(--accent);
+  direction:ltr; text-align:left;
+  transition:border-color .2s, box-shadow .2s, background .3s, color .3s;
+}
+.link-row input::placeholder { color:var(--text-dim); }
+.link-row input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+
+.btn-open-link {
+  background:var(--accent-soft); border:1px solid var(--border2);
+  border-radius:7px; padding:7px 10px;
+  color:var(--accent); cursor:pointer;
+  font-size:.76rem; font-family:'Cairo',sans-serif;
+  white-space:nowrap; flex-shrink:0;
+  display:flex; align-items:center; gap:4px;
+  transition:background .15s;
+}
+.btn-open-link:hover { background:rgba(55,138,221,.16); }
+html.light .btn-open-link:hover { background:rgba(26,111,191,.13); }
+
+.btn-rm-link {
+  background:none; border:none; cursor:pointer; color:var(--text-dim);
+  padding:5px; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  transition:color .15s, background .15s; flex-shrink:0;
+}
+.btn-rm-link:hover { color:#d94f4f; background:rgba(220,70,70,.1); }
+
+.btn-add-link {
+  background:none; border:1px dashed var(--border2);
+  border-radius:8px; padding:7px 12px;
+  color:var(--text-muted); font-family:'Cairo',sans-serif;
+  font-size:.78rem; cursor:pointer;
+  display:flex; align-items:center; gap:6px;
+  transition:border-color .2s, color .2s;
+}
+.btn-add-link:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ══════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════ */
+.empty {
+  text-align:center; padding:60px 20px;
+  color:var(--text-dim); animation:fadeUp .3s ease both;
+}
+.empty-icon {
+  width:46px; height:46px; background:var(--surface); border:1px solid var(--border);
+  border-radius:13px; display:flex; align-items:center; justify-content:center;
+  margin:0 auto 13px;
+}
+.empty p { font-size:.83rem; font-weight:300; line-height:1.75; }
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(9px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes pop {
+  0%  { transform:scale(1); }
+  38% { transform:scale(1.013); }
+  100%{ transform:scale(1); }
+}
+.pop { animation:pop .22s ease both; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── Header ── -->
+  <div class="header">
+    <div class="top-bar">
+      <div class="logo-row">
+        <div class="logo-icon">
+          <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="3" width="14" height="14" rx="3.5" stroke="var(--accent)" stroke-width="1.5"/>
+            <path d="M7 10l2.2 2.2L13.5 7.5" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">مهامي</span>
+      </div>
+
+      <!-- Theme toggle -->
+      <button class="theme-btn" id="themeBtn" title="تبديل المظهر">
+        <!-- Moon icon (shown in dark) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/>
+        </svg>
+        <!-- Sun icon (shown in light) -->
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="5"/>
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">الكل</div>
+        <div class="stat-value" id="sTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">متبقي</div>
+        <div class="stat-value" id="sPending">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">الإنجاز</div>
+        <div class="stat-value blue" id="sPct">—</div>
+      </div>
+    </div>
+
+    <div class="progress-section" id="progressSection">
+      <div class="progress-meta">
+        <span class="lbl">التقدم</span>
+        <span class="pct" id="pctLabel">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <!-- ── Add form ── -->
+  <div class="add-form">
+    <input type="text" id="inpTitle" placeholder="عنوان المهمة…" autocomplete="off"/>
+    <textarea id="inpDesc" placeholder="وصف اختياري — تفاصيل، ملاحظات…"></textarea>
+    <div class="form-footer">
+      <button class="btn-add" onclick="addTask()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M7 2v10M2 7h10"/>
+        </svg>
+        إضافة مهمة
+      </button>
+    </div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+/* ════════════════════════════════
+   STATE
+════════════════════════════════ */
+let tasks = [];
+try { tasks = JSON.parse(localStorage.getItem('mahami_v4') || '[]'); } catch(e) {}
+
+const save = () => localStorage.setItem('mahami_v4', JSON.stringify(tasks));
+
+/* ── Theme ── */
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('mahami_theme') || 'dark';
+if (savedTheme === 'light') html.classList.add('light');
+
+document.getElementById('themeBtn').addEventListener('click', () => {
+  html.classList.toggle('light');
+  localStorage.setItem('mahami_theme', html.classList.contains('light') ? 'light' : 'dark');
+});
+
+/* ════════════════════════════════
+   RENDER
+════════════════════════════════ */
+function render() {
+  const pending = tasks.filter(t => !t.done);
+  const done    = tasks.filter(t =>  t.done);
+  const total   = tasks.length;
+  const doneN   = done.length;
+  const pct     = total ? Math.round((doneN / total) * 100) : 0;
+
+  document.getElementById('sTotal').textContent   = total;
+  document.getElementById('sPending').textContent = pending.length;
+
+  const ps   = document.getElementById('progressSection');
+  const fill = document.getElementById('progressFill');
+  const pLbl = document.getElementById('pctLabel');
+  const sPct = document.getElementById('sPct');
+
+  if (total === 0) {
+    sPct.textContent = '—'; ps.style.display = 'none';
+  } else {
+    sPct.textContent = pct + '%'; ps.style.display = 'block';
+    pLbl.textContent = pct + '%'; fill.style.width = pct + '%';
+  }
+
+  const listEl = document.getElementById('list');
+  listEl.innerHTML = '';
+
+  if (total === 0) {
+    listEl.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round">
+            <rect x="3" y="3" width="18" height="18" rx="4"/>
+            <path d="M9 12l2.2 2.2 3.8-3.8"/>
+          </svg>
+        </div>
+        <p>لا توجد مهام بعد<br>أضف أول مهمة من الأعلى</p>
+      </div>`;
+    return;
+  }
+
+  // pending with reorder support
+  if (pending.length) {
+    // real indices in tasks array for pending
+    const pidxs = tasks.map((t,i) => ({t,i})).filter(x => !x.t.done);
+    const wrap = document.createElement('div');
+    wrap.className = 'tasks'; wrap.id = 'pendingWrap';
+    pidxs.forEach(({t}, localIdx) => {
+      wrap.appendChild(mkTask(t, localIdx, pidxs.length));
+    });
+    listEl.appendChild(wrap);
+    initDrag(wrap, false);
+  }
+
+  if (done.length) {
+    const lbl = document.createElement('div');
+    lbl.className = 'sec-label';
+    lbl.textContent = `منجز · ${doneN}`;
+    listEl.appendChild(lbl);
+
+    const didxs = tasks.map((t,i) => ({t,i})).filter(x => x.t.done);
+    const wrap = document.createElement('div');
+    wrap.className = 'tasks';
+    didxs.forEach(({t}, localIdx) => {
+      wrap.appendChild(mkTask(t, localIdx, didxs.length));
+    });
+    listEl.appendChild(wrap);
+    initDrag(wrap, true);
+  }
+}
+
+/* ════════════════════════════════
+   BUILD TASK CARD
+════════════════════════════════ */
+function mkTask(t, localIdx, total) {
+  const card = document.createElement('div');
+  card.className = 'task' + (t.done ? ' done' : '');
+  card.dataset.id = t.id;
+  card.draggable = true;
+
+  const hasExtra = (t.desc && t.desc.trim()) || (t.links && t.links.filter(Boolean).length);
+
+  card.innerHTML = `
+    <div class="task-top">
+      <div class="drag-handle" title="اسحب لإعادة الترتيب">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="order-btns">
+        <button class="btn-up" title="للأعلى" ${localIdx===0?'disabled':''}>
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l4-4 4 4"/>
+          </svg>
+        </button>
+        <button class="btn-dn" title="للأسفل" ${localIdx===total-1?'disabled':''}>
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 5l4 4 4-4"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chk">
+        <svg class="chk-svg" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 6l3 3 5-5"/>
+        </svg>
+      </div>
+      ${hasExtra ? '<span class="has-detail"></span>' : ''}
+      <span class="task-title">${esc(t.text)}</span>
+      <div class="task-actions">
+        <button class="btn-expand" title="التفاصيل">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6l4 4 4-4"/>
+          </svg>
+        </button>
+        <button class="btn-del" title="حذف">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+            <path d="M3 3l8 8M11 3l-8 8"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="task-detail">
+      <div class="task-detail-inner">
+        <textarea class="task-desc-area" placeholder="وصف المهمة، ملاحظات، تفاصيل…">${esc(t.desc||'')}</textarea>
+        <div class="links-section">
+          <div class="links-label">روابط</div>
+          <div class="links-list"></div>
+          <button class="btn-add-link">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M7 2v10M2 7h10"/>
+            </svg>
+            أضف رابطاً
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  const top       = card.querySelector('.task-top');
+  const detail    = card.querySelector('.task-detail');
+  const btnExp    = card.querySelector('.btn-expand');
+  const btnDel    = card.querySelector('.btn-del');
+  const btnUp     = card.querySelector('.btn-up');
+  const btnDn     = card.querySelector('.btn-dn');
+  const descArea  = card.querySelector('.task-desc-area');
+  const linksList = card.querySelector('.links-list');
+  const btnAddL   = card.querySelector('.btn-add-link');
+
+  // Render saved links
+  (t.links || []).forEach((url) => addLinkRow(linksList, t, url));
+
+  // Toggle done
+  top.addEventListener('click', e => {
+    if (e.target.closest('.task-actions, .order-btns, .drag-handle')) return;
+    const tObj = tasks.find(x => x.id === t.id);
+    if (!tObj) return;
+    tObj.done = !tObj.done;
+    save(); card.classList.add('pop');
+    setTimeout(render, 200);
+  });
+
+  // Expand/collapse
+  btnExp.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = detail.classList.toggle('open');
+    btnExp.classList.toggle('open', open);
+  });
+
+  // Save desc
+  descArea.addEventListener('blur', () => {
+    const tObj = tasks.find(x => x.id === t.id);
+    if (tObj) { tObj.desc = descArea.value; save(); }
+  });
+  descArea.addEventListener('click', e => e.stopPropagation());
+  descArea.addEventListener('mousedown', e => e.stopPropagation());
+
+  // Add link
+  btnAddL.addEventListener('click', e => {
+    e.stopPropagation();
+    const tObj = tasks.find(x => x.id === t.id);
+    if (!tObj) return;
+    if (!tObj.links) tObj.links = [];
+    tObj.links.push('');
+    save();
+    addLinkRow(linksList, tObj, '');
+    const inputs = linksList.querySelectorAll('input');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  });
+
+  // Delete
+  btnDel.addEventListener('click', e => {
+    e.stopPropagation();
+    tasks = tasks.filter(x => x.id !== t.id);
+    save(); render();
+  });
+
+  // Move up
+  btnUp && btnUp.addEventListener('click', e => {
+    e.stopPropagation();
+    moveTask(t.id, -1, t.done);
+  });
+
+  // Move down
+  btnDn && btnDn.addEventListener('click', e => {
+    e.stopPropagation();
+    moveTask(t.id, +1, t.done);
+  });
+
+  return card;
+}
+
+/* ════════════════════════════════
+   MOVE TASK (arrow buttons)
+════════════════════════════════ */
+function moveTask(id, dir, isDone) {
+  // get indices of same-group tasks
+  const group = tasks.map((t,i) => ({t,i})).filter(x => x.t.done === isDone);
+  const pos   = group.findIndex(x => x.t.id === id);
+  const newPos = pos + dir;
+  if (newPos < 0 || newPos >= group.length) return;
+
+  // swap in main tasks array
+  const idxA = group[pos].i;
+  const idxB = group[newPos].i;
+  [tasks[idxA], tasks[idxB]] = [tasks[idxB], tasks[idxA]];
+  save(); render();
+}
+
+/* ════════════════════════════════
+   DRAG & DROP
+════════════════════════════════ */
+let dragId   = null;
+let dragDone = false;
+
+function initDrag(wrap, isDone) {
+  wrap.addEventListener('dragstart', e => {
+    const card = e.target.closest('.task');
+    if (!card) return;
+    dragId   = card.dataset.id;
+    dragDone = isDone;
+    setTimeout(() => card.classList.add('dragging'), 0);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  wrap.addEventListener('dragend', e => {
+    wrap.querySelectorAll('.task').forEach(c => {
+      c.classList.remove('dragging','drag-over');
+    });
+    dragId = null;
+  });
+
+  wrap.addEventListener('dragover', e => {
+    e.preventDefault();
+    const card = e.target.closest('.task');
+    if (!card || card.dataset.id === dragId) return;
+    wrap.querySelectorAll('.task').forEach(c => c.classList.remove('drag-over'));
+    card.classList.add('drag-over');
+  });
+
+  wrap.addEventListener('dragleave', e => {
+    const card = e.target.closest('.task');
+    if (card) card.classList.remove('drag-over');
+  });
+
+  wrap.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.task');
+    if (!target || !dragId || target.dataset.id === dragId) return;
+    target.classList.remove('drag-over');
+
+    const group     = tasks.map((t,i) => ({t,i})).filter(x => x.t.done === isDone);
+    const fromLocal = group.findIndex(x => x.t.id === dragId);
+    const toLocal   = group.findIndex(x => x.t.id === target.dataset.id);
+    if (fromLocal === -1 || toLocal === -1) return;
+
+    // determine drop position (top/bottom half)
+    const rect = target.getBoundingClientRect();
+    const half = rect.top + rect.height / 2;
+    const insertBefore = e.clientY < half;
+
+    // rebuild group order
+    const grpItems = group.map(x => x.t);
+    const [moved]  = grpItems.splice(fromLocal, 1);
+    let insertIdx  = toLocal > fromLocal ? toLocal - 1 : toLocal;
+    if (!insertBefore && insertIdx === toLocal - 1) insertIdx++;
+    grpItems.splice(insertBefore ? (toLocal > fromLocal ? toLocal-1 : toLocal) : (toLocal > fromLocal ? toLocal : toLocal+1), 0, moved);
+
+    // re-write tasks keeping non-group items in place
+    const nonGroup = tasks.filter(t => t.done !== isDone);
+    // interleave: slots where group items were
+    let gIdx = 0, ngIdx = 0, result = [];
+    tasks.forEach(t => {
+      if (t.done === isDone) result.push(grpItems[gIdx++]);
+      else { result.push(nonGroup[ngIdx++]); }
+    });
+    tasks = result;
+    save(); render();
+  });
+}
+
+/* ════════════════════════════════
+   ADD LINK ROW
+════════════════════════════════ */
+function addLinkRow(container, tObj, url) {
+  const row = document.createElement('div');
+  row.className = 'link-row';
+  row.innerHTML = `
+    <input type="text" placeholder="https://…" value="${esc(url)}" dir="ltr"/>
+    <button class="btn-open-link">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 2H2v10h10V9M8 2h4v4M6 8l5-5"/>
+      </svg>
+      فتح
+    </button>
+    <button class="btn-rm-link">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+        <path d="M3 3l8 8M11 3l-8 8"/>
+      </svg>
+    </button>`;
+
+  const inp     = row.querySelector('input');
+  const btnOpen = row.querySelector('.btn-open-link');
+  const btnRm   = row.querySelector('.btn-rm-link');
+
+  inp.addEventListener('input', () => {
+    if (!tObj.links) tObj.links = [];
+    const i = Array.from(container.querySelectorAll('.link-row')).indexOf(row);
+    tObj.links[i] = inp.value.trim();
+    save();
+  });
+  inp.addEventListener('click', e => e.stopPropagation());
+  inp.addEventListener('mousedown', e => e.stopPropagation());
+
+  btnOpen.addEventListener('click', e => {
+    e.stopPropagation();
+    let href = inp.value.trim();
+    if (!href) return;
+    if (!/^https?:\/\//i.test(href)) href = 'https://' + href;
+    window.open(href, '_blank', 'noopener');
+  });
+
+  btnRm.addEventListener('click', e => {
+    e.stopPropagation();
+    const i = Array.from(container.querySelectorAll('.link-row')).indexOf(row);
+    if (tObj.links) { tObj.links.splice(i, 1); save(); }
+    row.remove();
+  });
+
+  container.appendChild(row);
+}
+
+/* ════════════════════════════════
+   ADD TASK
+════════════════════════════════ */
+function addTask() {
+  const titleEl = document.getElementById('inpTitle');
+  const descEl  = document.getElementById('inpDesc');
+  const txt = titleEl.value.trim();
+  if (!txt) { titleEl.focus(); return; }
+  tasks.unshift({ id: Date.now().toString(), text: txt, desc: descEl.value.trim(), links: [], done: false });
+  save(); render();
+  titleEl.value = ''; descEl.value = ''; titleEl.focus();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.getElementById('inpTitle').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addTask();
+});
+
+render();
+</script>
+</body>
+</html>
