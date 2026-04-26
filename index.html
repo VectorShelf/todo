@@ -56,11 +56,11 @@ body {
   min-height:100vh;
   display:flex;
   justify-content:center;
-  padding:48px 20px 100px;
+  padding:44px 20px 120px;
   transition:background .3s, color .3s;
 }
 
-.container { width:100%; max-width:540px; }
+.container { width:100%; max-width:560px; }
 
 /* ══════════════════════════════════════
    HEADER
@@ -105,12 +105,12 @@ html.light .icon-moon { display:none; }
 .stats-row { display:flex; gap:8px; }
 .stat-card {
   flex:1; background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:12px 14px;
+  border-radius:var(--radius); padding:14px 16px;
   box-shadow:var(--shadow);
   transition:background .3s, border-color .3s, box-shadow .3s;
 }
-.stat-label { font-size:.66rem; font-weight:600; color:var(--text-muted); letter-spacing:.5px; margin-bottom:3px; }
-.stat-value { font-size:1.5rem; font-weight:900; color:var(--text); line-height:1; transition:color .3s; }
+.stat-label { font-size:.67rem; font-weight:600; color:var(--text-muted); letter-spacing:.6px; margin-bottom:5px; }
+.stat-value { font-size:1.7rem; font-weight:900; color:var(--text); line-height:1; transition:color .3s; }
 .stat-value.blue { color:var(--accent); }
 
 /* Progress */
@@ -132,10 +132,10 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 ══════════════════════════════════════ */
 .add-form {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:var(--radius); padding:14px;
-  margin-bottom:20px;
+  border-radius:var(--radius); padding:16px;
+  margin-bottom:24px;
   animation:fadeUp .4s .07s ease both;
-  display:flex; flex-direction:column; gap:8px;
+  display:flex; flex-direction:column; gap:9px;
   box-shadow:var(--shadow);
   transition:background .3s, border-color .3s;
 }
@@ -143,8 +143,8 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 .add-form input[type="text"],
 .add-form textarea {
   background:var(--surface3); border:1px solid var(--border);
-  border-radius:9px; padding:10px 13px;
-  font-family:'Cairo',sans-serif; font-size:.87rem; color:var(--text);
+  border-radius:9px; padding:11px 14px;
+  font-family:'Cairo',sans-serif; font-size:.9rem; color:var(--text);
   outline:none; caret-color:var(--accent); width:100%;
   transition:border-color .2s, box-shadow .2s, background .3s, color .3s;
 }
@@ -152,21 +152,21 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 .add-form textarea::placeholder { color:var(--text-dim); }
 .add-form input[type="text"]:focus,
 .add-form textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
-.add-form textarea { resize:none; height:68px; line-height:1.55; }
+.add-form textarea { resize:none; height:70px; line-height:1.6; }
 
 .form-footer { display:flex; justify-content:flex-end; }
 
 .btn-add {
-  display:flex; align-items:center; gap:6px;
+  display:flex; align-items:center; gap:7px;
   background:var(--accent); color:#fff;
   border:none; border-radius:9px;
-  padding:0 18px; height:40px;
-  font-family:'Cairo',sans-serif; font-size:.88rem; font-weight:600;
+  padding:0 20px; height:42px;
+  font-family:'Cairo',sans-serif; font-size:.9rem; font-weight:600;
   cursor:pointer;
   transition:opacity .15s, transform .15s, box-shadow .2s;
-  box-shadow:0 3px 12px var(--accent-glow);
+  box-shadow:0 3px 14px var(--accent-glow);
 }
-.btn-add:hover { opacity:.88; box-shadow:0 4px 18px var(--accent-glow); }
+.btn-add:hover { opacity:.88; box-shadow:0 5px 20px var(--accent-glow); }
 .btn-add:active { transform:scale(.95); }
 
 /* ══════════════════════════════════════
@@ -180,7 +180,7 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 /* ══════════════════════════════════════
    TASK CARD
 ══════════════════════════════════════ */
-.tasks { display:flex; flex-direction:column; gap:7px; }
+.tasks { display:flex; flex-direction:column; gap:8px; }
 
 .task {
   background:var(--surface); border:1px solid var(--border);
@@ -197,17 +197,17 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
   text-decoration:line-through; text-decoration-thickness:1.5px;
   text-decoration-color:var(--text-dim);
 }
-.task.dragging { opacity:.45; transform:scale(.99); }
+.task.dragging { opacity:.4; transform:scale(.985); }
 .task.drag-over { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent-glow); }
 
 /* Task top row */
 .task-top {
-  display:flex; align-items:center; gap:10px;
-  padding:12px 12px 12px 14px;
+  display:flex; align-items:center; gap:11px;
+  padding:14px 13px 14px 15px;
   cursor:pointer; user-select:none;
   transition:background .15s;
 }
-.task-top:hover { background:rgba(128,128,128,.03); }
+.task-top:hover { background:rgba(128,128,128,.025); }
 
 /* Drag handle */
 .drag-handle {
@@ -240,17 +240,17 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 
 /* Checkbox */
 .chk {
-  width:21px; height:21px; border-radius:7px;
+  width:22px; height:22px; border-radius:7px;
   border:1.5px solid var(--border2); flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
   transition:all .22s ease; background:transparent;
 }
 .task.done .chk {
   background:var(--accent); border-color:var(--accent);
-  box-shadow:0 2px 8px var(--accent-glow);
+  box-shadow:0 2px 10px var(--accent-glow);
 }
 .chk-svg {
-  width:10px; height:10px; opacity:0;
+  width:11px; height:11px; opacity:0;
   transform:scale(.3) rotate(-8deg);
   transition:all .22s cubic-bezier(.34,1.5,.64,1);
 }
@@ -263,8 +263,8 @@ html.light .progress-fill { background:linear-gradient(90deg,#1a6fbf,#4fa3e8); }
 }
 
 .task-title {
-  flex:1; font-size:.88rem; font-weight:500;
-  color:var(--text); line-height:1.45;
+  flex:1; font-size:.92rem; font-weight:500;
+  color:var(--text); line-height:1.5;
   transition:color .25s; word-break:break-word;
 }
 
@@ -839,7 +839,7 @@ function addTask() {
   const descEl  = document.getElementById('inpDesc');
   const txt = titleEl.value.trim();
   if (!txt) { titleEl.focus(); return; }
-  tasks.unshift({ id: Date.now().toString(), text: txt, desc: descEl.value.trim(), links: [], done: false });
+  tasks.push({ id: Date.now().toString(), text: txt, desc: descEl.value.trim(), links: [], done: false });
   save(); render();
   titleEl.value = ''; descEl.value = ''; titleEl.focus();
 }
